@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Milmasthon Restaurant | ملمستن ریسٹورینٹ</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Amiri:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dark: #8B6914;
+    --deep: #0D0A06;
+    --dark: #1A1308;
+    --card: #1F1810;
+    --border: rgba(201,168,76,0.25);
+    --text: #F5EDD8;
+    --muted: #A89070;
+    --red: #B03A2E;
+    --cream: #FAF3E0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep);
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.35;
+  }
+
+  /* ─── NAVBAR ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 60px;
+    background: linear-gradient(to bottom, rgba(13,10,6,0.95), transparent);
+    backdrop-filter: blur(4px);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .nav-logo span { color: var(--text); font-weight: 400; font-style: italic; }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    background: transparent; border: 1px solid var(--gold);
+    color: var(--gold); padding: 10px 28px;
+    font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s; font-family: 'Lato', sans-serif;
+    text-decoration: none;
+  }
+  .nav-cta:hover { background: var(--gold); color: var(--deep); }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    background: radial-gradient(ellipse at 30% 60%, #2A1F0A 0%, var(--deep) 60%);
+  }
+  .hero-bg-pattern {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 70% 20%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 10% 80%, rgba(176,58,46,0.08) 0%, transparent 40%);
+  }
+  .hero-ornament {
+    position: absolute;
+    width: 700px; height: 700px;
+    border: 1px solid rgba(201,168,76,0.08);
+    border-radius: 50%;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  .hero-ornament::before {
+    content: '';
+    position: absolute; inset: 40px;
+    border: 1px solid rgba(201,168,76,0.05);
+    border-radius: 50%;
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    text-align: center; padding: 20px;
+    animation: fadeUp 1.2s ease both;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 24px;
+    border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold);
+    padding: 6px 20px;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 900; line-height: 1;
+    color: var(--text); margin-bottom: 12px;
+    text-shadow: 0 4px 40px rgba(201,168,76,0.2);
+  }
+  .hero-title-urdu {
+    font-family: 'Amiri', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: var(--gold); margin-bottom: 28px;
+    display: block; direction: rtl;
+  }
+  .hero-sub {
+    font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 48px;
+  }
+  .hero-rating {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-bottom: 48px;
+  }
+  .stars { color: var(--gold); font-size: 1.1rem; letter-spacing: 2px; }
+  .rating-num { font-size: 1rem; color: var(--gold); font-weight: 700; }
+  .rating-count { font-size: 0.8rem; color: var(--muted); }
+  .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--gold); color: var(--deep);
+    padding: 16px 44px; border: none;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;
+    font-weight: 700; cursor: pointer; transition: all 0.3s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; border: 1px solid rgba(201,168,76,0.4);
+    color: var(--text); padding: 16px 44px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ─── DIVIDER ─── */
+  .gold-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; margin: 20px 0;
+  }
+  .gold-divider::before, .gold-divider::after {
+    content: ''; flex: 1; max-width: 120px;
+    height: 1px; background: linear-gradient(to right, transparent, var(--gold));
+  }
+  .gold-divider::after { background: linear-gradient(to left, transparent, var(--gold)); }
+  .divider-icon { color: var(--gold); font-size: 1.2rem; }
+
+  /* ─── INFO STRIP ─── */
+  #info-strip {
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 60px;
+    display: flex; justify-content: center;
+    gap: 60px; flex-wrap: wrap;
+  }
+  .info-item { text-align: center; }
+  .info-label {
+    font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 6px;
+  }
+  .info-value { font-size: 0.95rem; color: var(--text); font-weight: 300; }
+  .info-value a { color: var(--text); text-decoration: none; }
+  .info-value a:hover { color: var(--gold); }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 100px 60px; }
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-tag {
+    font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px; display: block;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700; color: var(--text);
+  }
+  .section-title-urdu {
+    font-family: 'Amiri', serif;
+    font-size: 1.4rem; color: var(--muted);
+    display: block; direction: rtl; margin-top: 8px;
+  }
+
+  /* ─── ABOUT ─── */
+  #about { background: var(--dark); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center; max-width: 1100px; margin: 0 auto;
+  }
+  .about-text p {
+    font-size: 1rem; line-height: 1.9; color: var(--muted);
+    margin-bottom: 20px; font-weight: 300;
+  }
+  .about-text p strong { color: var(--gold); font-weight: 700; }
+  .about-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .stat-card {
+    border: 1px solid var(--border);
+    padding: 32px 24px; text-align: center;
+    background: var(--card);
+    transition: border-color 0.3s;
+  }
+  .stat-card:hover { border-color: var(--gold); }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem; font-weight: 900;
+    color: var(--gold); display: block;
+  }
+  .stat-label {
+    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); margin-top: 8px; display: block;
+  }
+
+  /* ─── MENU ─── */
+  #menu { background: var(--deep); }
+  .menu-categories {
+    display: flex; justify-content: center; flex-wrap: wrap;
+    gap: 8px; margin-bottom: 60px;
+  }
+  .cat-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); padding: 10px 24px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s;
+  }
+  .cat-btn:hover, .cat-btn.active {
+    background: var(--gold); border-color: var(--gold);
+    color: var(--deep); font-weight: 700;
+  }
+  .menu-section { display: none; max-width: 1000px; margin: 0 auto; }
+  .menu-section.active { display: block; animation: fadeUp 0.5s ease both; }
+  .menu-cat-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; color: var(--gold);
+    margin-bottom: 8px; text-align: center;
+  }
+  .menu-items { margin-top: 32px; }
+  .menu-item {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    transition: all 0.2s;
+  }
+  .menu-item:hover { padding-left: 8px; border-bottom-color: rgba(201,168,76,0.3); }
+  .item-name { font-size: 0.95rem; color: var(--text); font-weight: 300; flex: 1; }
+  .item-dots {
+    flex: 1; border-bottom: 1px dotted rgba(201,168,76,0.2);
+    margin: 0 16px; min-width: 40px;
+  }
+  .item-price { color: var(--gold); font-size: 0.9rem; font-weight: 700; white-space: nowrap; }
+  .menu-subsection { margin-bottom: 40px; }
+  .menu-sub-title {
+    font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 4px;
+    border-left: 2px solid var(--gold); padding-left: 12px;
+    margin-top: 32px;
+  }
+  .platter-card {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 28px; margin-bottom: 20px;
+    transition: border-color 0.3s;
+  }
+  .platter-card:hover { border-color: var(--gold); }
+  .platter-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .platter-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--text);
+  }
+  .platter-serving {
+    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); margin-top: 4px;
+  }
+  .platter-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--gold); font-weight: 900;
+  }
+  .platter-includes {
+    font-size: 0.8rem; color: var(--muted); line-height: 1.7; font-style: italic;
+  }
+
+  /* ─── CONTACT ─── */
+  #contact { background: var(--dark); }
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; max-width: 1000px; margin: 0 auto;
+  }
+  .contact-info-item {
+    display: flex; gap: 20px; align-items: flex-start;
+    padding: 24px; border: 1px solid var(--border);
+    margin-bottom: 16px; transition: border-color 0.3s;
+  }
+  .contact-info-item:hover { border-color: var(--gold); }
+  .contact-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+  .contact-detail-label {
+    font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 6px;
+  }
+  .contact-detail-value { font-size: 0.9rem; color: var(--text); font-weight: 300; line-height: 1.6; }
+  .contact-detail-value a { color: var(--text); text-decoration: none; }
+  .contact-detail-value a:hover { color: var(--gold); }
+  .contact-map {
+    background: var(--card); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    min-height: 320px; flex-direction: column; gap: 16px;
+    text-align: center; padding: 40px;
+  }
+  .map-placeholder-icon { font-size: 3rem; }
+  .map-placeholder-text {
+    font-family: 'Playfair Display', serif; font-size: 1.1rem;
+    color: var(--text); margin-bottom: 8px;
+  }
+  .map-placeholder-sub { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+  .map-btn {
+    margin-top: 16px;
+    display: inline-block;
+    background: var(--gold); color: var(--deep);
+    padding: 12px 32px; text-decoration: none;
+    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 700; transition: background 0.3s;
+  }
+  .map-btn:hover { background: var(--gold-light); }
+
+  /* ─── SERVICES STRIP ─── */
+  .services-strip {
+    display: flex; justify-content: center; gap: 0;
+    max-width: 800px; margin: 0 auto 60px;
+    border: 1px solid var(--border);
+  }
+  .service-item {
+    flex: 1; text-align: center; padding: 24px 16px;
+    border-right: 1px solid var(--border);
+  }
+  .service-item:last-child { border-right: none; }
+  .service-icon { font-size: 1.6rem; margin-bottom: 10px; display: block; }
+  .service-name {
+    font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    padding: 60px 60px 32px;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 900; color: var(--gold);
+    letter-spacing: 4px; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .footer-urdu {
+    font-family: 'Amiri', serif; font-size: 1.4rem;
+    color: var(--muted); direction: rtl; margin-bottom: 32px;
+  }
+  .footer-links {
+    display: flex; justify-content: center; gap: 40px;
+    list-style: none; margin-bottom: 32px; flex-wrap: wrap;
+  }
+  .footer-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy {
+    font-size: 0.75rem; color: rgba(168,144,112,0.4);
+    border-top: 1px solid var(--border); padding-top: 24px; margin-top: 24px;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 70px 24px; }
+    #info-strip { padding: 24px; gap: 32px; }
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+    .services-strip { flex-direction: column; border: none; }
+    .service-item { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Milmasthon <span>Restaurant</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="tel:+923448132400" class="nav-cta">Reserve: +92 344 8132400</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-ornament"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Est. Metroville, Karachi</div>
+    <h1 class="hero-title">Milmasthon</h1>
+    <span class="hero-title-urdu">ملمستن ریسٹورینٹ</span>
+    <p class="hero-sub">Authentic Afghani &amp; Pakistani Cuisine</p>
+    <div class="hero-rating">
+      <span class="stars">★★★★★</span>
+      <span class="rating-num">4.4</span>
+      <span class="rating-count">(115 Reviews)</span>
+    </div>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-primary">Explore Menu</a>
+      <a href="#contact" class="btn-outline">Find Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- INFO STRIP -->
+<div id="info-strip">
+  <div class="info-item">
+    <div class="info-label">Location</div>
+    <div class="info-value">W2G2+R92, Metroville Sector 3, SITE, Karachi</div>
+  </div>
+  <div class="info-item">
+    <div class="info-label">Phone</div>
+    <div class="info-value"><a href="tel:+923448132400">+92 344 8132400</a></div>
+  </div>
+  <div class="info-item">
+    <div class="info-label">Hours</div>
+    <div class="info-value">Opens 7 PM Daily</div>
+  </div>
+  <div class="info-item">
+    <div class="info-label">Price Range</div>
+    <div class="info-value">Rs. 1,000 – 2,000 / person</div>
+  </div>
+  <div class="info-item">
+    <div class="info-label">Rating</div>
+    <div class="info-value">⭐ 4.4 / 5 (115 reviews)</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header fade-in">
+    <span class="section-tag">Our Story</span>
+    <h2 class="section-title">Where Tradition Meets Taste</h2>
+    <div class="gold-divider"><span class="divider-icon">✦</span></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text fade-in">
+      <p>Nestled in the heart of <strong>Metroville, Karachi</strong>, Milmasthon Restaurant is a celebrated destination for those who crave the bold, soul-warming flavours of <strong>Afghani and Pakistani cuisine</strong>.</p>
+      <p>From slow-cooked <strong>Dumpukht</strong> and fragrant <strong>Afghani Pulao</strong> to sizzling <strong>BBQ platters</strong> and rich <strong>Karahi</strong> — every dish is a testament to culinary heritage, prepared with finest spices and time-honoured techniques.</p>
+      <p>Whether you're gathering with family, celebrating with friends, or seeking a comforting meal, Milmasthon offers an experience that goes beyond dining — it's a warm Pashtoon welcome on every plate.</p>
+      <div class="services-strip" style="margin-top:40px;">
+        <div class="service-item">
+          <span class="service-icon">🍽️</span>
+          <div class="service-name">Dine-In</div>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">📦</span>
+          <div class="service-name">Takeout</div>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">🛵</span>
+          <div class="service-name">Delivery</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-stats fade-in">
+      <div class="stat-card">
+        <span class="stat-num">4.4</span>
+        <span class="stat-label">Google Rating</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">115+</span>
+        <span class="stat-label">Reviews</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">50+</span>
+        <span class="stat-label">Menu Items</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">8</span>
+        <span class="stat-label">Platter Sizes</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="section-header fade-in">
+    <span class="section-tag">Our Offerings</span>
+    <h2 class="section-title">The Full Menu</h2>
+    <span class="section-title-urdu">مکمل مینو</span>
+    <div class="gold-divider"><span class="divider-icon">✦</span></div>
+  </div>
+
+  <div class="menu-categories fade-in">
+    <button class="cat-btn active" onclick="showCat('karahi')">Karahi</button>
+    <button class="cat-btn" onclick="showCat('bbq')">Bar B.Q</button>
+    <button class="cat-btn" onclick="showCat('afghani')">Afghani</button>
+    <button class="cat-btn" onclick="showCat('platters')">Platters</button>
+    <button class="cat-btn" onclick="showCat('handi')">Handi &amp; Rolls</button>
+    <button class="cat-btn" onclick="showCat('fastfood')">Fast Food</button>
+    <button class="cat-btn" onclick="showCat('pizza')">Pizza</button>
+    <button class="cat-btn" onclick="showCat('soda')">Soda &amp; Drinks</button>
+    <button class="cat-btn" onclick="showCat('misc')">Tandoor &amp; More</button>
+  </div>
+
+  <!-- KARAHI -->
+  <div class="menu-section active" id="cat-karahi">
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Dumba Karahi</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Milmastoon Shahi Dumba Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 3400 / 1750</span></div>
+        <div class="menu-item"><span class="item-name">Dumba Peshawari Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 3200 / 1650</span></div>
+        <div class="menu-item"><span class="item-name">Dumba Shinwari Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 3200 / 1650</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Mutton Karahi</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Milmastoon Shahi Mutton Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 3300 / 1700</span></div>
+        <div class="menu-item"><span class="item-name">Special Makhni Mutton Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 3200 / 1600</span></div>
+        <div class="menu-item"><span class="item-name">Mutton Peshawari Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 3000 / 1550</span></div>
+        <div class="menu-item"><span class="item-name">Mutton White Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 3200 / 1650</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Beef Karahi</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Milmastoon Shahi Beef Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 2200 / 1150</span></div>
+        <div class="menu-item"><span class="item-name">Beef Peshawari Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 2000 / 1050</span></div>
+        <div class="menu-item"><span class="item-name">Beef Shinwari Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 2000 / 1050</span></div>
+        <div class="menu-item"><span class="item-name">Beef White Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 2200 / 1150</span></div>
+        <div class="menu-item"><span class="item-name">Beef Achari Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 2000 / 1050</span></div>
+        <div class="menu-item"><span class="item-name">Beef Qeema Fry</span><span class="item-dots"></span><span class="item-price">Rs. 380</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Chicken Karahi</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Milmastoon Shahi Chicken Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 1800 / 950</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Karahi (Red)</span><span class="item-dots"></span><span class="item-price">Rs. 1600 / 850</span></div>
+        <div class="menu-item"><span class="item-name">Peshawari Chicken Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 1600 / 850</span></div>
+        <div class="menu-item"><span class="item-name">Achari Chicken Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 1600 / 850</span></div>
+        <div class="menu-item"><span class="item-name">Chicken White Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 1800 / 950</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Balochi Tikka Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 1600 / 850</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Brown Karahi</span><span class="item-dots"></span><span class="item-price">Rs. 1600 / 850</span></div>
+        <div class="menu-item"><span class="item-name">Chicken White Qeema</span><span class="item-dots"></span><span class="item-price">Rs. 350</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BBQ -->
+  <div class="menu-section" id="cat-bbq">
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Bar B.Q Tikka</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Patta Tikka</span><span class="item-dots"></span><span class="item-price">Rs. 700 / 350</span></div>
+        <div class="menu-item"><span class="item-name">Milmasthon Afghani Tikka</span><span class="item-dots"></span><span class="item-price">Rs. 400</span></div>
+        <div class="menu-item"><span class="item-name">Special Bihari Tikka</span><span class="item-dots"></span><span class="item-price">Rs. 400</span></div>
+        <div class="menu-item"><span class="item-name">Special Malai Tikka</span><span class="item-dots"></span><span class="item-price">Rs. 370</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Spicy Tikka</span><span class="item-dots"></span><span class="item-price">Rs. 370</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Namkeen Tikka</span><span class="item-dots"></span><span class="item-price">Rs. 350</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Leg Tikka</span><span class="item-dots"></span><span class="item-price">Rs. 300</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Bar B.Q Botti</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Chicken Malai Botti</span><span class="item-dots"></span><span class="item-price">Rs. 800 / 410</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Bihari Botti</span><span class="item-dots"></span><span class="item-price">Rs. 800 / 410</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Namkeen Botti</span><span class="item-dots"></span><span class="item-price">Rs. 700 / 359</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Spicy Botti</span><span class="item-dots"></span><span class="item-price">Rs. 740 / 370</span></div>
+        <div class="menu-item"><span class="item-name">Beef Bihari Botti</span><span class="item-dots"></span><span class="item-price">Rs. 800 / 410</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Tandoori Makhni Botti</span><span class="item-dots"></span><span class="item-price">Rs. 750</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Spicy Roll Botti</span><span class="item-dots"></span><span class="item-price">Rs. 800 / 400</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Bar B.Q Kabab</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Chicken Reshmi Kabab</span><span class="item-dots"></span><span class="item-price">Rs. 620 / 310</span></div>
+        <div class="menu-item"><span class="item-name">Beef Seekh Kabab</span><span class="item-dots"></span><span class="item-price">Rs. 620 / 310</span></div>
+        <div class="menu-item"><span class="item-name">Beef Gola Kabab</span><span class="item-dots"></span><span class="item-price">Rs. 620 / 310</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Katakat</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Tawa Kaleji</span><span class="item-dots"></span><span class="item-price">Rs. 250</span></div>
+        <div class="menu-item"><span class="item-name">Beef Tawa Qeema</span><span class="item-dots"></span><span class="item-price">Rs. 300</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Tawa Qeema</span><span class="item-dots"></span><span class="item-price">Rs. 300</span></div>
+        <div class="menu-item"><span class="item-name">Brain Masala</span><span class="item-dots"></span><span class="item-price">Rs. 600</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFGHANI -->
+  <div class="menu-section" id="cat-afghani">
+    <p style="text-align:center;color:var(--gold);font-style:italic;font-size:0.8rem;letter-spacing:2px;margin-bottom:32px;">⚠ ORDER 1 DAY IN ADVANCE</p>
+    <div class="menu-items">
+      <div class="menu-item"><span class="item-name">Dumpukht with Rice</span><span class="item-dots"></span><span class="item-price">Rs. 3000 (1 kg)</span></div>
+      <div class="menu-item"><span class="item-name">Chicken Sajji</span><span class="item-dots"></span><span class="item-price">Rs. 1100 / 600</span></div>
+      <div class="menu-item"><span class="item-name">Full Chicken Sajji with Rice</span><span class="item-dots"></span><span class="item-price">Rs. 1400</span></div>
+      <div class="menu-item"><span class="item-name">Mutton Roast</span><span class="item-dots"></span><span class="item-price">Rs. 1000</span></div>
+      <div class="menu-item"><span class="item-name">Beef Afghani Botti</span><span class="item-dots"></span><span class="item-price">Rs. 800 / 400</span></div>
+      <div class="menu-item"><span class="item-name">Beef Afghani Pulao</span><span class="item-dots"></span><span class="item-price">Rs. 300</span></div>
+    </div>
+  </div>
+
+  <!-- PLATTERS -->
+  <div class="menu-section" id="cat-platters">
+    <div class="menu-sub-title" style="text-align:center;border:none;padding:0;margin-bottom:24px;">Bar B.Q Platters</div>
+    <div class="platter-card">
+      <div class="platter-header">
+        <div><div class="platter-name">Bar B.Q Platter</div><div class="platter-serving">3 Person Serving</div></div>
+        <div class="platter-price">Rs. 1,300</div>
+      </div>
+      <div class="platter-includes">Chicken Malai Botti · Beef Bihari Botti · Beef Seekh Kabab · Chicken Reshmi Kabab</div>
+    </div>
+    <div class="platter-card">
+      <div class="platter-header">
+        <div><div class="platter-name">Bar B.Q Platter</div><div class="platter-serving">5 Person Serving</div></div>
+        <div class="platter-price">Rs. 2,650</div>
+      </div>
+      <div class="platter-includes">Beef Seekh Kabab · Beef Gola Kabab · Chicken Reshmi Kabab · Malai Botti · Beef Bihari · Chicken Roll Botti · Raan Tikka · Half Sajji</div>
+    </div>
+    <div class="platter-card">
+      <div class="platter-header">
+        <div><div class="platter-name">Bar B.Q Rice Platter</div><div class="platter-serving">3 Person Serving</div></div>
+        <div class="platter-price">Rs. 1,499</div>
+      </div>
+      <div class="platter-includes">Raan Tikka · Afghani Botti · Beef Seekh Kabab · Afghani Pulao (Double)</div>
+    </div>
+    <div class="platter-card">
+      <div class="platter-header">
+        <div><div class="platter-name">Bar B.Q Rice Platter</div><div class="platter-serving">5 Person Serving</div></div>
+        <div class="platter-price">Rs. 2,599</div>
+      </div>
+      <div class="platter-includes">Raan Tikka · Seekh Kabab · Chicken Sajji Half · Beef Bihari Botti · Beef Afghani Botti · Afghani Pulao (3 plates)</div>
+    </div>
+    <div class="platter-card">
+      <div class="platter-header">
+        <div><div class="platter-name">B.B.Q Platter</div><div class="platter-serving">8 Person Serving</div></div>
+        <div class="platter-price">Rs. 4,999</div>
+      </div>
+      <div class="platter-includes">2 Raan Tikka · Seekh Kabab · Chicken Sajji Full · Beef Afghani Botti · Chicken Bihari Botti · Garlic Naan</div>
+    </div>
+    <div class="platter-card" style="border-color:rgba(201,168,76,0.5);">
+      <div class="platter-header">
+        <div><div class="platter-name">BBQ Rice & Handi Platter</div><div class="platter-serving">10 Person Serving</div></div>
+        <div class="platter-price">Rs. 5,999</div>
+      </div>
+      <div class="platter-includes">Afghani Pulao 5 plates · 2 Leg Tikka · Beef Seekh Kabab Half · Chicken Reshmi Kabab Half · Beef Bihari Botti Half · Beef Afghani Botti Half · 2 Chicken Makhni Handi Half · Chicken Sajji Half</div>
+    </div>
+    <div class="menu-sub-title" style="text-align:center;border:none;padding:0;margin:32px 0 24px;">Afghani Platters</div>
+    <div class="platter-card">
+      <div class="platter-header">
+        <div><div class="platter-name">Afghani Platter</div><div class="platter-serving">3 Person Serving</div></div>
+        <div class="platter-price">Rs. 2,299</div>
+      </div>
+      <div class="platter-includes">1 Mutton Rosh · Dubble Afghani Pulao · Afghani Boti Half · 1 Litre Cold Drink</div>
+    </div>
+    <div class="platter-card">
+      <div class="platter-header">
+        <div><div class="platter-name">Afghani Platter</div><div class="platter-serving">6 Person Serving</div></div>
+        <div class="platter-price">Rs. 4,199</div>
+      </div>
+      <div class="platter-includes">2 Mutton Rosh · Afghani Boti Full · Afghani Pulao 3 plates · 1.5 Litre Cold Drink</div>
+    </div>
+    <div class="platter-card">
+      <div class="platter-header">
+        <div><div class="platter-name">Fast Food Platter</div><div class="platter-serving">6 Person Serving</div></div>
+        <div class="platter-price">Rs. 1,999</div>
+      </div>
+      <div class="platter-includes">2 Regular Zinger · 1 Large Pizza · 1 Chest Broast · 1 Fries · 1 Litre Cold Drink · 2 Chicken Roll</div>
+    </div>
+  </div>
+
+  <!-- HANDI & ROLLS -->
+  <div class="menu-section" id="cat-handi">
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Chicken Handi</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Milmastoon Shahi Chicken Handi</span><span class="item-dots"></span><span class="item-price">Rs. 2300 / 1200</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Makhni Handi</span><span class="item-dots"></span><span class="item-price">Rs. 2200 / 1150</span></div>
+        <div class="menu-item"><span class="item-name">Chicken White Handi</span><span class="item-dots"></span><span class="item-price">Rs. 2200 / 1050</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Achari Handi</span><span class="item-dots"></span><span class="item-price">Rs. 2000 / 1050</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Special Roll</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Crispy Jumbo Roll</span><span class="item-dots"></span><span class="item-price">Rs. 240</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Koyla Botti Roll</span><span class="item-dots"></span><span class="item-price">Rs. 140</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Malai Botti Roll</span><span class="item-dots"></span><span class="item-price">Rs. 180</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Mayo Roll</span><span class="item-dots"></span><span class="item-price">Rs. 180</span></div>
+        <div class="menu-item"><span class="item-name">Beef Botti Roll</span><span class="item-dots"></span><span class="item-price">Rs. 180</span></div>
+        <div class="menu-item"><span class="item-name">Shami Kabab Roll</span><span class="item-dots"></span><span class="item-price">Rs. 100</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Hot Bar</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Badami Chai</span><span class="item-dots"></span><span class="item-price">Rs. 80 / 120</span></div>
+        <div class="menu-item"><span class="item-name">Kashmiri Chai</span><span class="item-dots"></span><span class="item-price">Rs. 120</span></div>
+        <div class="menu-item"><span class="item-name">Green Tea</span><span class="item-dots"></span><span class="item-price">Rs. 60</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAST FOOD -->
+  <div class="menu-section" id="cat-fastfood">
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Starter Fries</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">French Misalah Fries</span><span class="item-dots"></span><span class="item-price">Rs. 100</span></div>
+        <div class="menu-item"><span class="item-name">French Mayo Fries</span><span class="item-dots"></span><span class="item-price">Rs. 150</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Burgers & Sandwiches</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Mighty Zinger Burger</span><span class="item-dots"></span><span class="item-price">Rs. 350</span></div>
+        <div class="menu-item"><span class="item-name">Regular Zinger Burger</span><span class="item-dots"></span><span class="item-price">Rs. 280</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Burger</span><span class="item-dots"></span><span class="item-price">Rs. 250</span></div>
+        <div class="menu-item"><span class="item-name">Beef Burger</span><span class="item-dots"></span><span class="item-price">Rs. 260</span></div>
+        <div class="menu-item"><span class="item-name">Anda Burger</span><span class="item-dots"></span><span class="item-price">Rs. 100</span></div>
+        <div class="menu-item"><span class="item-name">Bun Burger</span><span class="item-dots"></span><span class="item-price">Rs. 80</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Jumbo Burger</span><span class="item-dots"></span><span class="item-price">Rs. 320</span></div>
+        <div class="menu-item"><span class="item-name">Beef Jumbo Burger</span><span class="item-dots"></span><span class="item-price">Rs. 320</span></div>
+        <div class="menu-item"><span class="item-name">Club Sandwich</span><span class="item-dots"></span><span class="item-price">Rs. 280</span></div>
+        <div class="menu-item"><span class="item-name">Bar B.Q Sandwich</span><span class="item-dots"></span><span class="item-price">Rs. 300</span></div>
+        <div class="menu-item"><span class="item-name">Crispy Sandwich</span><span class="item-dots"></span><span class="item-price">Rs. 320</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Broast</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Broast Karahi Masala</span><span class="item-dots"></span><span class="item-price">Rs. 420</span></div>
+        <div class="menu-item"><span class="item-name">Broast Chest</span><span class="item-dots"></span><span class="item-price">Rs. 400</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Chinese Rice</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Manchorian Rice</span><span class="item-dots"></span><span class="item-price">Rs. 410</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Fried Rice</span><span class="item-dots"></span><span class="item-price">Rs. 280</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Shashlik with Rice</span><span class="item-dots"></span><span class="item-price">Rs. 460</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Chilli Fried Rice</span><span class="item-dots"></span><span class="item-price">Rs. 350</span></div>
+        <div class="menu-item"><span class="item-name">Masala Rice</span><span class="item-dots"></span><span class="item-price">Rs. 370</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIZZA -->
+  <div class="menu-section" id="cat-pizza">
+    <p style="text-align:center;color:var(--muted);font-size:0.8rem;letter-spacing:2px;margin-bottom:24px;text-transform:uppercase;">Small / Regular / Large</p>
+    <div class="menu-items">
+      <div class="menu-item"><span class="item-name">Afghani Pizza</span><span class="item-dots"></span><span class="item-price">Rs. 250 / 450 / 750</span></div>
+      <div class="menu-item"><span class="item-name">Fajita Pizza</span><span class="item-dots"></span><span class="item-price">Rs. 250 / 450 / 750</span></div>
+      <div class="menu-item"><span class="item-name">Chicken Pizza</span><span class="item-dots"></span><span class="item-price">Rs. 250 / 450 / 750</span></div>
+      <div class="menu-item"><span class="item-name">Malai Tikka Pizza</span><span class="item-dots"></span><span class="item-price">Rs. 250 / 450 / 750</span></div>
+      <div class="menu-item"><span class="item-name">Bihari Chicken Botti Pizza</span><span class="item-dots"></span><span class="item-price">Rs. 250 / 450 / 750</span></div>
+      <div class="menu-item"><span class="item-name">Green Tikka Pizza</span><span class="item-dots"></span><span class="item-price">Rs. 250 / 450 / 750</span></div>
+      <div class="menu-item"><span class="item-name">Chicken Tandoori Pizza</span><span class="item-dots"></span><span class="item-price">Rs. 270 / 480 / 600</span></div>
+      <div class="menu-item"><span class="item-name">Peproni Pizza</span><span class="item-dots"></span><span class="item-price">Rs. 200 / 400 / 600</span></div>
+      <div class="menu-item"><span class="item-name">Vegetable Pizza</span><span class="item-dots"></span><span class="item-price">Rs. 200 / 400 / 600</span></div>
+      <div class="menu-item"><span class="item-name">Margarita Pizza</span><span class="item-dots"></span><span class="item-price">Rs. 200 / 400 / 600</span></div>
+    </div>
+  </div>
+
+  <!-- SODA -->
+  <div class="menu-section" id="cat-soda">
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Regular Drinks — Rs. 130 each</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Lemon Lime</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Blue Berry</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Peach</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Pineapple</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Plum</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Blackberry</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Red Apple</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Green Apple</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Choran Chatni</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Chilli Mill</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Strawberry</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Amrod</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Pakola</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Cola</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Red Anar</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Sting</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Falsa</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+        <div class="menu-item"><span class="item-name">Red Bull</span><span class="item-dots"></span><span class="item-price">Rs. 130</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Lemonades — Rs. 200 each</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Mint Lemonade</span><span class="item-dots"></span><span class="item-price">Rs. 200</span></div>
+        <div class="menu-item"><span class="item-name">Berry Lemonade</span><span class="item-dots"></span><span class="item-price">Rs. 200</span></div>
+        <div class="menu-item"><span class="item-name">Peach Lemonade</span><span class="item-dots"></span><span class="item-price">Rs. 200</span></div>
+        <div class="menu-item"><span class="item-name">Lychee Lemonade</span><span class="item-dots"></span><span class="item-price">Rs. 200</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Signature Drinks — Rs. 150 each</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Cocktail</span><span class="item-dots"></span><span class="item-price">Rs. 150</span></div>
+        <div class="menu-item"><span class="item-name">Mocktail</span><span class="item-dots"></span><span class="item-price">Rs. 150</span></div>
+        <div class="menu-item"><span class="item-name">Lemon Ginger</span><span class="item-dots"></span><span class="item-price">Rs. 150</span></div>
+        <div class="menu-item"><span class="item-name">Mix Berry</span><span class="item-dots"></span><span class="item-price">Rs. 150</span></div>
+        <div class="menu-item"><span class="item-name">Plumtastic Guava</span><span class="item-dots"></span><span class="item-price">Rs. 150</span></div>
+      </div>
+    </div>
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Special Drinks — Rs. 170 each</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Mint Margarita</span><span class="item-dots"></span><span class="item-price">Rs. 170</span></div>
+        <div class="menu-item"><span class="item-name">Ginger Mint</span><span class="item-dots"></span><span class="item-price">Rs. 170</span></div>
+        <div class="menu-item"><span class="item-name">Apple Cocktail</span><span class="item-dots"></span><span class="item-price">Rs. 170</span></div>
+        <div class="menu-item"><span class="item-name">Fusion Blast</span><span class="item-dots"></span><span class="item-price">Rs. 170</span></div>
+        <div class="menu-item"><span class="item-name">Wild Berry</span><span class="item-dots"></span><span class="item-price">Rs. 170</span></div>
+        <div class="menu-item"><span class="item-name">Blue Lagoon</span><span class="item-dots"></span><span class="item-price">Rs. 170</span></div>
+        <div class="menu-item"><span class="item-name">Vimto</span><span class="item-dots"></span><span class="item-price">Rs. 170</span></div>
+        <div class="menu-item"><span class="item-name">Zeera Spicy</span><span class="item-dots"></span><span class="item-price">Rs. 170</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISC -->
+  <div class="menu-section" id="cat-misc">
+    <div class="menu-subsection">
+      <div class="menu-sub-title">Tandoor</div>
+      <div class="menu-items">
+        <div class="menu-item"><span class="item-name">Rogni Naan</span><span class="item-dots"></span><span class="item-price">Rs. 60</span></div>
+        <div class="menu-item"><span class="item-name">Garlic Naan</span><span class="item-dots"></span><span class="item-price">Rs. 60</span></div>
+        <div class="menu-item"><span class="item-name">Plain Naan</span><span class="item-dots"></span><span class="item-price">Rs. 30</span></div>
+        <div class="menu-item"><span class="item-name">Chapati</span><span class="item-dots"></span><span class="item-price">Rs. 20</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header fade-in">
+    <span class="section-tag">Find Us</span>
+    <h2 class="section-title">Visit Milmasthon</h2>
+    <div class="gold-divider"><span class="divider-icon">✦</span></div>
+  </div>
+  <div class="contact-grid fade-in">
+    <div>
+      <div class="contact-info-item">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-detail-label">Address</div>
+          <div class="contact-detail-value">W2G2+R92, Metroville Sector 3<br>Sindh Industrial Trading Estate<br>Karachi, Pakistan</div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-detail-label">Phone</div>
+          <div class="contact-detail-value"><a href="tel:+923448132400">+92 344 8132400</a></div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">🕐</div>
+        <div>
+          <div class="contact-detail-label">Hours</div>
+          <div class="contact-detail-value">Opens 7 PM Daily<br><span style="color:var(--gold);font-size:0.8rem;">Evening &amp; Night Dining</span></div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">💰</div>
+        <div>
+          <div class="contact-detail-label">Price Range</div>
+          <div class="contact-detail-value">Rs. 1,000 – 2,000 per person</div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">⭐</div>
+        <div>
+          <div class="contact-detail-label">Google Rating</div>
+          <div class="contact-detail-value">4.4 / 5 — 115 Reviews</div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-map">
+      <div class="map-placeholder-icon">🗺️</div>
+      <div class="map-placeholder-text">Metroville Sector 3, Karachi</div>
+      <div class="map-placeholder-sub">W2G2+R92, Sindh Industrial Trading Estate<br>Near Frontier Morr, Metroville</div>
+      <a href="https://maps.app.goo.gl/hP6UCMjrX49dgQUG7" target="_blank" class="map-btn">Open in Google Maps</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Milmasthon</div>
+  <div class="footer-urdu">ملمستن ریسٹورینٹ</div>
+  <ul class="footer-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="tel:+923448132400">+92 344 8132400</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Milmasthon Restaurant · Metroville, Karachi · All Rights Reserved</div>
+</footer>
+
+<script>
+  function showCat(id) {
+    document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('cat-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
